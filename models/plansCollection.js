@@ -6,7 +6,6 @@ module.exports = Backbone.Collection.extend({
     url: 'https://graph.microsoft-ppe.com/alpha/me/plans',
 
     parse: function(data) {
-        console.log("parse, data.value: " + data.value);
         return data.value;
     }
 });
