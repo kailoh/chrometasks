@@ -1,6 +1,6 @@
-var Backbone = require('../bower_components/backbone/backbone.js');
+var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
-    idAttribute: '_id',
+    idAttribute: 'id',
     urlRoot: 'https://graph.microsoft-ppe.com/alpha/me/plans/',
 });

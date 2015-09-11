@@ -1,10 +1,13 @@
-var React = require('../bower_components/react/react.js')
+var React = require('react')
 
 module.exports = React.createClass({
+    handleClick: function() {
+        this.props.handleClick(this.props.reactKey);
+    },
     render: function() {
         return (
             <div className="row">
-                <p>{this.props.title}</p>
+                <button onClick={this.handleClick}>{this.props.title}</button>
             </div>
         )
     }

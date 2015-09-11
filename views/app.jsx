@@ -12,7 +12,6 @@ module.exports = React.createClass({
         this.props.collection.forEach(function(plan) {
             rows.push(<Plan key={plan.get('id')}
             reactKey={plan.get('id')}
-            handleClick={this.props.handleClick}
             title={plan.get('title')}></Plan>);
         }.bind(this));
         return (

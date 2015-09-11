@@ -1,12 +1,30 @@
-var Backbone = require('../bower_components/backbone/backbone.js'),
-React = require('../bower_components/react/react.js'),
+var Backbone = require('backbone'),
+React = require('react'),
 PlansCollection = require('../models/plansCollection.js'),
 Plans = require('../views/plans.jsx'),
-_ = require('../bower_components/underscore/underscore.js')
+TaskModel = require('../models/taskModel.js'),
+NewTask = require('../views/newTask.jsx'),
+_ = require('underscore')
+
+
+//https://dlmknahcjhphemkenmlokpjlpicgnbbg.chromiumapp.org/#access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IjF6bmJlNmV2ZWJPamg2TTNXR1E5X1ZmWXVJdyIsImtpZCI6IjF6bmJlNmV2ZWJPamg2TTNXR1E5X1ZmWXVJdyJ9.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC1wcGUuY29tLyIsImlzcyI6Imh0dHBzOi8vc3RzLndpbmRvd3MtcHBlLm5ldC80NTJhOGVjZC02Y2YyLTQ5ODQtODk2My1kZGYyOTIyYzBlOGIvIiwiaWF0IjoxNDQxOTM4MzgzLCJuYmYiOjE0NDE5MzgzODMsImV4cCI6MTQ0MTk0MjI4MywidmVyIjoiMS4wIiwidGlkIjoiNDUyYThlY2QtNmNmMi00OTg0LTg5NjMtZGRmMjkyMmMwZThiIiwib2lkIjoiOWIyYjQxYzEtYzhlZi00ZGJlLTg5NTgtZDk4NmU5YTBhYzc1IiwidXBuIjoiQXpUZXN0QHBsaXRlMi5jY3NjdHAubmV0IiwicHVpZCI6IjEwMDMwMDAwOERGMzQ5MjYiLCJzdWIiOiI0Zmc3QVE2bllpNlJuaFNCaHJkUGUzNXBSLTJneUhHUkdWSzh6ZzgtUHNnIiwiZ2l2ZW5fbmFtZSI6IkF6VGVzdCIsImZhbWlseV9uYW1lIjoiQXpUZXN0IiwibmFtZSI6IkF6VGVzdCIsImFtciI6WyJwd2QiXSwidW5pcXVlX25hbWUiOiJBelRlc3RAcGxpdGUyLmNjc2N0cC5uZXQiLCJhcHBpZCI6Ijg5Y2I1NTdiLTk4MTQtNDMyNy1iZjFmLTlkODNjN2U3NmRhMCIsImFwcGlkYWNyIjoiMCIsInNjcCI6IlRhc2tzLlJlYWQuQWxsIFRhc2tzLlJlYWRXcml0ZS5BbGwgVXNlci5SZWFkIiwiYWNyIjoiMSIsImlwYWRkciI6IjE2Ny4yMjAuMTAzLjIwMyJ9.LvI5FHSn6WE4Nd24xeIM3yEOQTy5Rweszxp0KVxeO8uwjkmyMfaI2Vb1vy-st789qeRJcR8DBxxVke13C6Ix0LtuWILAlHJVQlQo5lrPFHDjNv_qIUUYtRVJu2CORaQ3htBt0N4gQw3kEtc17HGXMYLmcII-IDif_ZAFO9D132dufbUf9NT99r_Ur_PldXvrSY33-eG89e-OTlTBJr1LHXDaUTbD8E-OuZ2jCtVjxHWYvEcxLito-enPUP-SjsJ8bkMMmo7ltg0wfC2aeiySW8zNOOBKjCYyIP4ZWKen7GllZqpU5HyxEbWx3o9g9eZrlcC0GFqZ8iSWymCWjyXaiQ&token_type=Bearer&expires_in=3599&session_state=ea17ed23-9747-4786-995f-bca61c8e3fb7
 
 var sendAuthentication = function (xhr) {
-    var token = '';
+    var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IjF6bmJlNmV2ZWJPamg2TTNXR1E5X1ZmWXVJdyIsImtpZCI6IjF6bmJlNmV2ZWJPamg2TTNXR1E5X1ZmWXVJdyJ9.eyJhdWQiOiJodHRwczovL2dyYXBoLm1pY3Jvc29mdC1wcGUuY29tLyIsImlzcyI6Imh0dHBzOi8vc3RzLndpbmRvd3MtcHBlLm5ldC80NTJhOGVjZC02Y2YyLTQ5ODQtODk2My1kZGYyOTIyYzBlOGIvIiwiaWF0IjoxNDQxOTM4MzgzLCJuYmYiOjE0NDE5MzgzODMsImV4cCI6MTQ0MTk0MjI4MywidmVyIjoiMS4wIiwidGlkIjoiNDUyYThlY2QtNmNmMi00OTg0LTg5NjMtZGRmMjkyMmMwZThiIiwib2lkIjoiOWIyYjQxYzEtYzhlZi00ZGJlLTg5NTgtZDk4NmU5YTBhYzc1IiwidXBuIjoiQXpUZXN0QHBsaXRlMi5jY3NjdHAubmV0IiwicHVpZCI6IjEwMDMwMDAwOERGMzQ5MjYiLCJzdWIiOiI0Zmc3QVE2bllpNlJuaFNCaHJkUGUzNXBSLTJneUhHUkdWSzh6ZzgtUHNnIiwiZ2l2ZW5fbmFtZSI6IkF6VGVzdCIsImZhbWlseV9uYW1lIjoiQXpUZXN0IiwibmFtZSI6IkF6VGVzdCIsImFtciI6WyJwd2QiXSwidW5pcXVlX25hbWUiOiJBelRlc3RAcGxpdGUyLmNjc2N0cC5uZXQiLCJhcHBpZCI6Ijg5Y2I1NTdiLTk4MTQtNDMyNy1iZjFmLTlkODNjN2U3NmRhMCIsImFwcGlkYWNyIjoiMCIsInNjcCI6IlRhc2tzLlJlYWQuQWxsIFRhc2tzLlJlYWRXcml0ZS5BbGwgVXNlci5SZWFkIiwiYWNyIjoiMSIsImlwYWRkciI6IjE2Ny4yMjAuMTAzLjIwMyJ9.LvI5FHSn6WE4Nd24xeIM3yEOQTy5Rweszxp0KVxeO8uwjkmyMfaI2Vb1vy-st789qeRJcR8DBxxVke13C6Ix0LtuWILAlHJVQlQo5lrPFHDjNv_qIUUYtRVJu2CORaQ3htBt0N4gQw3kEtc17HGXMYLmcII-IDif_ZAFO9D132dufbUf9NT99r_Ur_PldXvrSY33-eG89e-OTlTBJr1LHXDaUTbD8E-OuZ2jCtVjxHWYvEcxLito-enPUP-SjsJ8bkMMmo7ltg0wfC2aeiySW8zNOOBKjCYyIP4ZWKen7GllZqpU5HyxEbWx3o9g9eZrlcC0GFqZ8iSWymCWjyXaiQ';
     xhr.setRequestHeader('Authorization', ("Bearer " + token));
+}
+
+var handlePlanClick = function(planId) {
+    var model = new TaskModel({planId: planId});
+    var handleTaskClick
+    React.render(
+        <NewTask model={model}/>,
+        document.getElementById('mainContent')
+    );
+}
+
+var handleTaskClick = function() {
+    model.save();
 }
 
 var collection = new PlansCollection();
@@ -14,7 +32,7 @@ collection.fetch({
     beforeSend: sendAuthentication,
     success: function() {
         React.render(
-            <Plans collection={collection}/>,
+            <Plans collection={collection} handleClick={handlePlanClick}/>,
             document.getElementById('mainContent')
         );
     }
